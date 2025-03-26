@@ -1,15 +1,17 @@
+using UnityEngine;
+
 public class Cell
 {
-    public Cell(Coordinates position, int value)
+    public Cell(Vector2Int position, int value)
     {
         _position = position;
         _value = value;
     }
     
-    private Coordinates _position ;
+    private Vector2Int _position ;
     private int _value;
     
-    public Coordinates Position
+    public Vector2Int Position
     {
         get => _position;
         set

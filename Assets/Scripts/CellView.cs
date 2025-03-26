@@ -47,8 +47,8 @@ public class CellView : MonoBehaviour
     {
         var position = _cell.Position;
         _rectTransform.anchoredPosition = new Vector2(
-            (_xOffset + position.X) * _cellDistance, 
-            (_yOffset + position.Y) * _cellDistance);
+            (_xOffset + position.x) * _cellDistance, 
+            (_yOffset + position.y) * _cellDistance);
     }
 
     private void UpdateValue()

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class GameField : MonoBehaviour
@@ -20,7 +18,7 @@ public class GameField : MonoBehaviour
     private float _xOffset;
     private float _yOffset;
     
-    private readonly List<Coordinates> _vacant = new();
+    private readonly List<Vector2Int> _vacant = new();
     
     public int Width => _width;
     public int Height => _height;
@@ -45,7 +43,7 @@ public class GameField : MonoBehaviour
         {
             for (int y = 0; y < _height; y++)
             {
-                _vacant.Add(new Coordinates(x, y));
+                _vacant.Add(new Vector2Int(x, y));
             }
         }
     }
@@ -97,7 +95,7 @@ public class GameField : MonoBehaviour
         }
     }
     
-    public Coordinates GetEmptyPosition()
+    public Vector2Int GetEmptyPosition()
     {
         int rndIndex = Random.Range(0, _vacant.Count);
         return _vacant[rndIndex];
