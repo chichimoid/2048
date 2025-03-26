@@ -95,6 +95,7 @@ public class GameField : MonoBehaviour
 
         return null;
     }
+    
     private bool IsEmpty(Vector2Int position)
     {
         return GetCellFromPosition(position) == null;
@@ -104,6 +105,11 @@ public class GameField : MonoBehaviour
     {
         var cell = GetCellFromPosition(position);
         return cell != null && cell.Value == value;
+    }
+    
+    private bool IsOutOfBounds(Vector2Int position)
+    {
+        return position.x < 0 || position.y < 0 || position.x >= _width || position.y >= _height;
     }
     
     public Vector2Int GetEmptyPosition()
@@ -143,5 +149,60 @@ public class GameField : MonoBehaviour
         
         var cellView = cellObject.GetComponent<CellView>();
         cellView.Init(cell);
+    }
+    public void MoveCells(Direction direction)
+    {
+        var traversalOrder = CreateTraversalOrder(direction);
+        
+        // TBA
+    }
+
+    private List<Vector2Int> CreateTraversalOrder(Direction direction)
+    {
+        var order = new List<Vector2Int>();
+        switch (direction)
+        {
+            case Direction.Up:
+                for (int y = _height; y > 0; y--)
+                {
+                    for (int x = 0; x < _width; x++)
+                    {
+                        order.Add(new Vector2Int(x, y));
+                    }
+                }
+
+                break;
+            case Direction.Down:
+                for (int y = 0; y < _height; y++)
+                {
+                    for (int x = 0; x < _width; x++)
+                    {
+                        order.Add(new Vector2Int(x, y));
+                    }
+                }
+
+                break;
+            case Direction.Right:
+                for (int x = _width; x > 0; x--)
+                {
+                    for (int y = 0; y < _height; y++)
+                    {
+                        order.Add(new Vector2Int(x, y));
+                    }
+                }
+
+                break;
+            case Direction.Left:
+                for (int x = 0; x < _width; x++)
+                {
+                    for (int y = 0; y < _height; y++)
+                    {
+                        order.Add(new Vector2Int(x, y));
+                    }
+                }
+
+                break;
+        }
+        return order;
     }
 }
