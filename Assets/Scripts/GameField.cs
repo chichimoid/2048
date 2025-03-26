@@ -8,7 +8,6 @@ public class GameField : MonoBehaviour
     [SerializeField] private GameObject emptyCellPrefab;
     [SerializeField] private GameObject valueCellPrefab;
     
-    private GameField _gameField;
     private RectTransform _gameFieldTransform;
 
     private int _width;
@@ -50,10 +49,7 @@ public class GameField : MonoBehaviour
     
     private void Start()
     {
-        _gameField = GetComponent<GameField>();
         _gameFieldTransform = GetComponent<RectTransform>();
-        _width = _gameField.Width;
-        _height = _gameField.Height;
 
         if (_width != 4 || _height != 4)
         {
