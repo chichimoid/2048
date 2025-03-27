@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class TextDisplayer : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] private TMP_Text textField;
+    
     private string _prevText;
     private Coroutine _hideTextCoroutine;
         

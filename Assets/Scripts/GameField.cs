@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class GameField : MonoBehaviour
 {
+    [Header("Prefabs")]
     [SerializeField] private GameObject emptyCellPrefab;
     [SerializeField] private GameObject valueCellPrefab;
     
     private RectTransform _gameFieldTransform;
-
+    
     private int _width;
     private int _height;
     private float _cellDistance = 64;
@@ -24,15 +26,18 @@ public class GameField : MonoBehaviour
     public float CellScaleMult => _cellScaleMult;
     public float XOffset => _xOffset;
     public float YOffset => _yOffset;
-    public List<Cell> Cells { get; } = new(); // Personally, wouldn't make that a list, but that was the requirement.
+    public List<Cell> Cells { get; private set; } // Personally, wouldn't use a list, but that was the requirement.
+    // All the simple algorithms suddenly become much slower due to indexing now taking O(N) instead of O(1).
+    // Time complexity still negligible though, since the field is small.
+    
     public static GameField Instance { get; private set; }
-
+    
     private void Awake()
     {
         Instance = this;
-
-        _width = GameFieldDataTransmitter.Instance.Width;
-        _height = GameFieldDataTransmitter.Instance.Height;
+        
+        _width = GameStateStaticContainer.GameState.width;
+        _height = GameStateStaticContainer.GameState.height;
         
         _xOffset = (float)-(_width - 1) / 2;
         _yOffset = (float)-(_height - 1) / 2;
@@ -41,12 +46,19 @@ public class GameField : MonoBehaviour
     private void Start()
     {
         _gameFieldTransform = GetComponent<RectTransform>();
+
+        GameFieldInputHandler.Instance.OnMoveCellsInput += MoveCells;
         
         if (_width != 4 || _height != 4)
         {
             AdjustSizes();
         }
+        
         SpawnEmptyCells();
+        
+        LoadCells(GameStateStaticContainer.GameState.Cells ?? new List<Cell>());
+        
+        OnFieldSpawned?.Invoke();
     }
     
     /// <summary>
@@ -63,7 +75,7 @@ public class GameField : MonoBehaviour
         float newDeltaY = _gameFieldTransform.sizeDelta.y * fieldHeightMult;
         _gameFieldTransform.sizeDelta = new Vector2(newDeltaX, newDeltaY);
     }
-
+    
     private void SpawnEmptyCells()
     {
         for (int x = 0; x < _width; x++)
@@ -100,7 +112,7 @@ public class GameField : MonoBehaviour
     {
         return GetCellFromPosition(position) == null;
     }
-
+    
     private bool IsMergeable(int value, Vector2Int position)
     {
         var cell = GetCellFromPosition(position);
@@ -132,11 +144,11 @@ public class GameField : MonoBehaviour
     {
         if (Cells.Count == _width * _height)
         {
-            Debug.Log("Game field is full");
+            OnFieldFull?.Invoke();
             return;
         }
         
-        int valueDistr = Random.Range(1, 11); // Hoping that Unity.Random gives a uniform distribution.
+        int valueDistr = Random.Range(1, 6); // Hoping that Unity.Random gives a uniform distribution.
         int value = valueDistr == 1 ? 2 : 1;
         
         var pos = GetEmptyPosition();
@@ -145,16 +157,39 @@ public class GameField : MonoBehaviour
 
         Cells.Add(cell);
         
+        CreateCellObject(cell);
+    }
+
+    public void LoadCells(List<Cell> cells)
+    {
+        Cells = cells;
+        foreach (var cell in Cells)
+        {
+            CreateCellObject(cell);
+        }
+    }
+
+    private void CreateCellObject(Cell cell)
+    {
         var cellObject = Instantiate(valueCellPrefab.transform, transform);
         
         var cellView = cellObject.GetComponent<CellView>();
         cellView.Init(cell);
     }
+    
     public void MoveCells(Direction direction)
     {
         var traversalOrder = CreateTraversalOrder(direction);
+
+        foreach (var pos in traversalOrder)
+        {
+            var cell = GetCellFromPosition(pos);
+            if (cell == null) continue;
+
+            MoveCell(cell, direction);
+        }
         
-        // TBA
+        OnCellsMoved?.Invoke();
     }
 
     private List<Vector2Int> CreateTraversalOrder(Direction direction)
@@ -163,7 +198,7 @@ public class GameField : MonoBehaviour
         switch (direction)
         {
             case Direction.Up:
-                for (int y = _height; y > 0; y--)
+                for (int y = _height - 1; y >= 0; y--)
                 {
                     for (int x = 0; x < _width; x++)
                     {
@@ -183,7 +218,7 @@ public class GameField : MonoBehaviour
 
                 break;
             case Direction.Right:
-                for (int x = _width; x > 0; x--)
+                for (int x = _width - 1; x >= 0; x--)
                 {
                     for (int y = 0; y < _height; y++)
                     {
@@ -205,4 +240,49 @@ public class GameField : MonoBehaviour
         }
         return order;
     }
+
+    private void MoveCell(Cell cell, Direction direction)
+    {
+        var newPos = cell.Position;
+        var directionVector = direction.ToVector2Int();
+        while (!IsOutOfBounds(newPos + directionVector))
+        {
+            if (IsEmpty(newPos + directionVector))
+            {
+                newPos += directionVector;
+            }
+            else if (IsMergeable(cell.Value, newPos + directionVector))
+            {
+                Merge(cell, GetCellFromPosition(newPos + directionVector));
+                return;
+            }
+            else
+            {
+                break;
+            }
+        }
+        cell.Position = newPos;
+    }
+    
+    private void Merge(Cell incomingCell, Cell overriddenCell)
+    {
+        incomingCell.Position = overriddenCell.Position;
+        ++incomingCell.Value;
+        Cells.Remove(overriddenCell);
+        overriddenCell.Destroy();
+    }
+
+    public int CalculateScore()
+    {
+        return Cells.Sum(cell => (int)Math.Pow(2, cell.Value));
+    }
+
+    public delegate void OnFieldSpawnedDelegate();
+    public event OnFieldSpawnedDelegate OnFieldSpawned;
+    
+    public delegate void OnCellsMovedDelegate();
+    public event OnCellsMovedDelegate OnCellsMoved;
+    
+    public delegate void OnFieldFullDelegate();
+    public event OnFieldFullDelegate OnFieldFull;
 }

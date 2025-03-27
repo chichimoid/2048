@@ -30,6 +30,7 @@ public class GameFieldInputHandler : MonoBehaviour
     private void HandleMoveCellsAction(InputAction.CallbackContext context)
     {
         var directionVector = context.ReadValue<Vector2>();
+        Debug.Log($"Move cells action performed. Read value: {directionVector}");
         if (directionVector.x != 0)
         {
             OnMoveCellsInput?.Invoke(directionVector.x > 0 ? Direction.Right : Direction.Left);

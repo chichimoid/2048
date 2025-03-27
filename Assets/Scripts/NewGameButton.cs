@@ -3,8 +3,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class StartGameButton : MonoBehaviour
+public class NewGameButton : MonoBehaviour
 {
+    [Header("Config")]
     [SerializeField] private TMP_InputField widthInputField;
     [SerializeField] private TMP_InputField heightInputField;
     
@@ -19,10 +20,10 @@ public class StartGameButton : MonoBehaviour
     private void Start()
     {   
         _button = GetComponent<Button>();
-        _button.onClick.AddListener(() => StartGame(widthInputField.text, heightInputField.text));
+        _button.onClick.AddListener(() => NewGame(widthInputField.text, heightInputField.text));
     }
 
-    private void StartGame(string fieldWidthInput, string fieldHeightInput)
+    private void NewGame(string fieldWidthInput, string fieldHeightInput)
     {
         if (!int.TryParse(fieldWidthInput, out int width) || width < 1 || width > 7)
         {
@@ -36,8 +37,8 @@ public class StartGameButton : MonoBehaviour
             return;
         }
         
-        GameFieldDataTransmitter.Instance.Width = width;
-        GameFieldDataTransmitter.Instance.Height = height;
+        GameStateStaticContainer.GameState.width = width;
+        GameStateStaticContainer.GameState.height = height;
 
         SceneManager.LoadScene("Game");
     }

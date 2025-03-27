@@ -35,4 +35,12 @@ public class Cell
     
     public delegate void OnValueChangedDelegate();
     public event OnValueChangedDelegate OnValueChanged;
+    
+    public delegate void OnCellDestroyedDelegate();
+    public event OnCellDestroyedDelegate OnCellDestroyed;
+
+    public void Destroy()
+    {
+        OnCellDestroyed?.Invoke();
+    }
 }

@@ -14,8 +14,9 @@ public class BackToMenuButton : MonoBehaviour
 
     private void BackToMenu()
     {
-        GameFieldDataTransmitter.Instance.Width = 0;
-        GameFieldDataTransmitter.Instance.Height = 0;
+        GameStateStaticContainer.GameState.width = 0;
+        GameStateStaticContainer.GameState.height = 0;
+        GameManager.Instance.StopGame();
 
         SceneManager.LoadScene("Menu");
     }
