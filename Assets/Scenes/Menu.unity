@@ -2403,6 +2403,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 681600966a414fc98f8fdd13d0600789, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxWidth: 7
+  maxHeight: 7
   textDisplayer: {fileID: 643037322}
 --- !u!4 &1808658564
 Transform:

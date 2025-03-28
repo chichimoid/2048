@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="db82436d-7e98-432d-a3ec-91a82ba559de" name="Changes" comment="" />
+    <list default="true" id="db82436d-7e98-432d-a3ec-91a82ba559de" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.2048/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.2048/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/InputSystem_Actions.inputactions" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/InputSystem_Actions.inputactions" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Game/Field/GameFieldInputHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Game/Field/GameFieldInputHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/InputActions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/InputActions.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -89,7 +94,7 @@
       <workItem from="1743006920559" duration="3534000" />
       <workItem from="1743071636413" duration="25345000" />
       <workItem from="1743116704834" duration="691000" />
-      <workItem from="1743165767809" duration="12761000" />
+      <workItem from="1743165767809" duration="14429000" />
     </task>
     <servers />
   </component>
