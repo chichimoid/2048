@@ -23,14 +23,14 @@ namespace Menu
         {
             if (!int.TryParse(widthInput, out width) || width < 1 || width > maxWidth)
             {
-                textDisplayer.TempDisplayText("Enter a valid width from 1 to 7");
+                textDisplayer.TempDisplayText($"Enter a valid width from 1 to {maxWidth}");
                 height = default;
                 return false;
             }
         
             if (!int.TryParse(heightInput, out height) || height < 1 || height > maxHeight)
             {
-                textDisplayer.TempDisplayText("Enter a valid height from 1 to 7");
+                textDisplayer.TempDisplayText($"Enter a valid height from 1 to 7{maxHeight}");
                 return false;
             }
 
